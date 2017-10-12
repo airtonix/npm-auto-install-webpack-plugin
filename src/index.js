@@ -22,10 +22,7 @@ const exec = thenify(nodeExec);
 
 export class NpmAutoInstallWebpackPlugin {
   constructor(options = {}) {
-    this.options = {
-      ...options,
-      install
-    };
+    this.options = options;
   }
 
   apply(compiler) {
