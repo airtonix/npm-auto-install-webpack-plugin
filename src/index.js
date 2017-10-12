@@ -24,7 +24,7 @@ export class NpmAutoInstallWebpackPlugin {
   constructor(options = {}) {
     this.options = {
       ...options,
-      autoInstall: options.autoInstall !== false,
+      install
     };
   }
 
@@ -48,7 +48,7 @@ export class NpmAutoInstallWebpackPlugin {
       plugins: plugins.filter(it => it.constructor !== NpmAutoInstallWebpackPlugin),
     });
 
-    if (this.options.autoInstall) {
+    if (this.options.install) {
       await this._installModuleList(moduleList);
     }
   }
@@ -81,8 +81,13 @@ export class NpmAutoInstallWebpackPlugin {
   }
 
   async _installModuleList(moduleList) {
-    return exec(`npm install ${moduleList.join(` `)}`);
+    if (typeof this.options.install === 'function') {
+      return this.options.install.call(this, moduleList);
+    } else {
+      return exec(`npm install ${moduleList.join(` `)}`);
+    }
   }
+  
 }
 
 export default NpmAutoInstallWebpackPlugin;
