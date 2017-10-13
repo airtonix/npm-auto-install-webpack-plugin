@@ -22,7 +22,10 @@ const exec = thenify(nodeExec);
 
 export class NpmAutoInstallWebpackPlugin {
   constructor(options = {}) {
-    this.options = options;
+    this.options = Object.assign(options, {
+       install: true,
+       strategy: null
+    });
   }
 
   apply(compiler) {
@@ -78,13 +81,13 @@ export class NpmAutoInstallWebpackPlugin {
   }
 
   async _installModuleList(moduleList) {
-    if (typeof this.options.install === 'function') {
-      return this.options.install.call(this, moduleList);
+    if (this.options.strategy && typeof this.options.strategy === 'function') {
+      return this.options.strategy(moduleList);
     } else {
       return exec(`npm install ${moduleList.join(` `)}`);
     }
   }
-  
+
 }
 
 export default NpmAutoInstallWebpackPlugin;
